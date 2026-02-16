@@ -1,0 +1,8 @@
+Hola, esta es la primera linea.
+2
+La tercera linea tiene un salto de linea justo despues.
+
+Esta linea viene despues de una linea vacia.
+A
+BC
+Esta ultima frase no tiene salto de linea al final (EOF directo)
