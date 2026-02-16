@@ -10,14 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-static char *read_text()
+static void *read_text(int fd, t_list **lst)
 {
+    int     bytes;
+    char    *text;
 
+    text = malloc(sizeof(char) * BUFFER_SIZE + 1);
+    if (!text)
+        return NULL;
+    while(!found_new_line(lst))
+    {
+        bytes = read(fd, text, BUFFER_SIZE);
+        if (bytes <= 0)
+        return (free(text), NULL);
+        text[bytes] = '\0';
+    }
+    add_list(&lst, text);
 }
 
 char *get_next_line(int fd)
 {
-    t_list  text_node;
-    
+    static t_list  *lst;
+
 
 }
