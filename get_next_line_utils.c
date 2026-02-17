@@ -45,23 +45,32 @@ void	add_list(t_list **lst, char *text)
     }
 }
 
+void    free_list(t_list *lst)
+{
+    t_list  *tmp;
+    while (lst)
+    {
+        tmp = lst->next;
+        free(lst->content);
+        free(lst);
+        lst = tmp;
+    }
+}
+
 size_t get_len_line(t_list *lst)
 {
     size_t  len;
     size_t  i;
 
-    if (!lst)
-        return (0);
     len = 0;
-    i = 0;
     while (lst)
     {
         i = 0;
         while (lst->content[i])
         {
-            if (lst->content[i] == '\n')
-                return (len + 1);
             len++;
+            if (lst->content[i] == '\n')
+                return (len);
             i++;
         }
         lst = lst->next;
@@ -74,10 +83,6 @@ int found_new_line(t_list *lst)
 {
     size_t  i;
     
-    if (!lst)
-    {
-        return (0);
-    }
     while (lst)
     {
         i = 0;

@@ -19,9 +19,13 @@ static void read_text(int fd, t_list **lst)
 
     while(!found_new_line(*lst))
     {
-        text = malloc(sizeof(char) * BUFFER_SIZE + 1);
+        text = malloc(sizeof(char) * (BUFFER_SIZE + 1));
         if (!text)
-            return;
+        {
+            free_list(*lst);
+            *lst = NULL;
+            return ;
+        }
         bytes = read(fd, text, BUFFER_SIZE);
         if (bytes <= 0)
         {   
@@ -61,66 +65,67 @@ static char *create_line(t_list *lst, size_t len)
     new_line[j] = '\0';
     return (new_line);
 }
-static void    free_list(t_list *lst)
+
+static char *get_clean_node(char *content)
 {
-    t_list  *tmp;
-    while (lst)
-    {
-        tmp = lst->next;
-        free(lst->content);
-        free(lst);
-        lst = tmp;
-    }
+    size_t i;
+    size_t clean_node_len;
+    char *new_content;
+
+    i = 0;
+    while (content[i] && content[i] != '\n')
+        i++;
+    if (content[i] == '\n')
+        i++;
+
+    clean_node_len = 0;
+    while (content[i + clean_node_len])
+        clean_node_len++;
+
+    if (clean_node_len == 0)
+        return NULL;
+
+    new_content = malloc(clean_node_len + 1);
+    if (!new_content)
+        return NULL;
+
+    clean_node_len = 0;
+    while (content[i])
+        new_content[clean_node_len++] = content[i++];
+    new_content[clean_node_len] = '\0';
+    return new_content;
 }
+
+
 static void clean_lst(t_list **lst)
 {
     t_list  *last;
-    t_list   *clean_node;
     char    *new_content;
-    size_t     i;
-    size_t     j;
 
-    new_content = malloc(BUFFER_SIZE + 1);
-    if (!new_content)
-    {
-        free_list(*lst);
-        *lst = NULL;
-        return;
-    }
-    clean_node = malloc(sizeof(t_list));
-    if (!clean_node)
-    {
-        free(new_content);
-        free_list(*lst);
-        *lst = NULL;
+    if (!lst || !*lst)
         return ;
-    }
     last = get_lst_last(*lst);
     if (!last)
-        return;
-    i = 0;
-    j = 0;
-    while (last->content[i] && last->content[i] != '\n')
-        i++;
-    if (last->content[i] && last->content[i] == '\n')
-        i++;
-    while (last->content[i])
-        new_content[j++] = last->content[i++];
-    new_content[j] = '\0';
-    if (j == 0)
     {
-        free(new_content);
-        free(clean_node);
         free_list(*lst);
         *lst = NULL;
+        return;
     }
-    else
+    new_content = get_clean_node(last->content);
+    free_list(*lst);
+    if (!new_content)
     {
-        clean_node->content =  new_content;
-        clean_node->next = NULL;
-        free_list(*lst);
-        *lst = clean_node;
+        *lst = NULL;
+        return;
     }
+    *lst = malloc(sizeof(t_list));
+    if (!*lst)
+    {
+        free(new_content);
+        return;
+    }
+    (*lst)->content = new_content;
+    (*lst)->next = NULL;
 }
 
 char *get_next_line(int fd)

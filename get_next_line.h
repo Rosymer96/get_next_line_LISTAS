@@ -31,5 +31,7 @@ void	add_list(t_list **lst, char *text);
 size_t get_len_line(t_list *lst);
 int found_new_line(t_list *lst);
 char *get_next_line(int fd);
+void    free_list(t_list *lst);
+
 
 #endif
