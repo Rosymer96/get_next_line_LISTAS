@@ -26,8 +26,10 @@ typedef struct s_list
 #  define BUFFER_SIZE 42
 # endif
 
-t_list	*get_lstlast(t_list *lst);
+t_list	*get_lst_last(t_list *lst);
 void	add_list(t_list **lst, char *text);
+size_t get_len_line(t_list *lst);
 int found_new_line(t_list *lst);
+char *get_next_line(int fd);
 
 #endif

@@ -1,37 +1,17 @@
 #include "get_next_line.h"
 #include <stdio.h>
+#include <fcntl.h>
+
 int main(void)
 {
-    t_list *lst;
-    t_list *aux;
-    char *text;
+    int fd = open("tester.txt", O_RDONLY);
+    char *line;
 
-    text = malloc(sizeof(char) * 15);
-    lst = NULL;
-    int i = 0;
-    while (i < 15)
+    while ((line = get_next_line(fd)))
     {
-        text[i] = "Hola mi\nmundo"[i];
-        i++;
-    }
-    text[15] = '\0';
-    add_list(&lst, text);
-    aux = lst;
-    while(aux)
-    {
-        printf("%s\n",lst->content);
-        aux = aux->next;
-    }
-
-    int res = found_new_line(lst);
-    printf("%d\n", res);
-    t_list *tmp;
-    while (lst)
-    {
-        tmp = lst->next;
-        free(lst-> content);
-        free(lst);
-        lst =tmp;
+        printf("%s", line);
+        free(line);
     }
     return (0);
+    close(fd);
 }

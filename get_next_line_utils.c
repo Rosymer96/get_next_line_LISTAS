@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-t_list	*get_lstlast(t_list *lst)
+t_list	*get_lst_last(t_list *lst)
 {
 	if (!lst)
 		return (NULL);
@@ -30,35 +30,49 @@ void	add_list(t_list **lst, char *text)
 
     new_node = malloc(sizeof(t_list));
     if (!new_node)
+    {
+        free(text);
         return;
+    }
     new_node->content = text;
     new_node->next = NULL;
 	if (!*lst)
         *lst = new_node;
     else
     {
-        last = get_lstlast(*lst);
+        last = get_lst_last(*lst);
         last->next = new_node;
     }
 }
 
-size_t	ft_strlen(const char *str)
+size_t get_len_line(t_list *lst)
 {
-	size_t	i;
+    size_t  len;
+    size_t  i;
 
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i] != '\0')
-	{
-		i++;
-	}
-	return (i);
+    if (!lst)
+        return (0);
+    len = 0;
+    i = 0;
+    while (lst)
+    {
+        i = 0;
+        while (lst->content[i])
+        {
+            if (lst->content[i] == '\n')
+                return (len + 1);
+            len++;
+            i++;
+        }
+        lst = lst->next;
+    }
+    return (len);
 }
+
 
 int found_new_line(t_list *lst)
 {
-    int i;
+    size_t  i;
     
     if (!lst)
     {
