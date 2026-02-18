@@ -26,6 +26,10 @@ typedef struct s_list
 #  define BUFFER_SIZE 42
 # endif
 
+#ifndef FD_MAX
+#  define FD_MAX 1024
+#endif
+
 t_list	*get_lst_last(t_list *lst);
 void	add_list(t_list **lst, char *text);
 size_t get_len_line(t_list *lst);

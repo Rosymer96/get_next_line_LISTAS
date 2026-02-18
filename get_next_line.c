@@ -106,11 +106,7 @@ static void clean_lst(t_list **lst)
         return ;
     last = get_lst_last(*lst);
     if (!last)
-    {
-        free_list(*lst);
-        *lst = NULL;
-        return;
-    }
+        return (free_list(*lst), *lst = NULL, (void)0);
     new_content = get_clean_node(last->content);
     free_list(*lst);
     if (!new_content)
@@ -130,27 +126,27 @@ static void clean_lst(t_list **lst)
 
 char *get_next_line(int fd)
 {
-    static t_list  *lst;
+    static t_list  *lst[FD_MAX];
     char    *line;
     size_t  len;
 
-    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+    if (fd < 0 || fd >= FD_MAX || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
     {
-        free_list(lst);
-        lst = NULL;
+        free_list(lst[fd]);
+        lst[fd] = NULL;
         return (NULL);
     }
-    read_text(fd, &lst);
-    if (!lst)
+    read_text(fd, &lst[fd]);
+    if (!lst[fd])
         return (NULL);
-    len = get_len_line(lst);
-    line = create_line(lst, len);
+    len = get_len_line(lst[fd]);
+    line = create_line(lst[fd], len);
     if (!line)
     {
-        free_list(lst);
-        lst = NULL;
+        free_list(lst[fd]);
+        lst[fd] = NULL;
         return (NULL);
     }
-    clean_lst(&lst);
+    clean_lst(&lst[fd]);
     return (line);
 }
