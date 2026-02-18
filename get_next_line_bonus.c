@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rosvela <rosvela@student.42madrid.com      +#+  +:+       +#+        */
+/*   By: rosvela <rosvela@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/18 11:36:25 by rosvela           #+#    #+#             */
-/*   Updated: 2026/02/18 12:14:00 by rosvela          ###   ########.fr       */
+/*   Created: 2026/02/18 14:20:52 by rosvela           #+#    #+#             */
+/*   Updated: 2026/02/18 14:23:21 by rosvela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-static void	read_text(int fd, t_list **lst)
+static int	read_text(int fd, t_list **lst)
 {
 	int		bytes;
 	char	*text;
@@ -21,20 +21,21 @@ static void	read_text(int fd, t_list **lst)
 	{
 		text = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!text)
-		{
-			free_list(*lst);
-			*lst = NULL;
-			return ;
-		}
+			return (free_list(*lst), *lst = NULL, 0);
 		bytes = read(fd, text, BUFFER_SIZE);
-		if (bytes <= 0)
+		if (bytes == -1)
 		{
 			free(text);
-			return ;
+			free_list(*lst);
+			*lst = NULL;
+			return (0);
 		}
+		if (bytes == 0)
+			return (free(text), 0);
 		text[bytes] = '\0';
 		add_list(lst, text);
 	}
+	return (1);
 }
 
 static char	*create_line(t_list *lst, size_t len)
@@ -125,7 +126,7 @@ char	*get_next_line(int fd)
 	char			*line;
 	size_t			len;
 
-	if (fd < 0 || fd >= FD_MAX || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || fd >= FD_MAX || BUFFER_SIZE <= 0)
 	{
 		free_list(lst[fd]);
 		lst[fd] = NULL;

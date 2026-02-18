@@ -6,11 +6,11 @@
 /*   By: rosvela <rosvela@student.42madrid.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 11:50:42 by rosvela           #+#    #+#             */
-/*   Updated: 2026/02/18 11:37:59 by rosvela          ###   ########.fr       */
+/*   Updated: 2026/02/18 13:44:51 by rosvela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 t_list	*get_lst_last(t_list *lst)
 {
