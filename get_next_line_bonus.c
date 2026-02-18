@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rosvela <rosvela@student.42madrid.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/16 11:43:59 by rosvela           #+#    #+#             */
-/*   Updated: 2026/02/18 12:13:48 by rosvela          ###   ########.fr       */
+/*   Created: 2026/02/18 11:36:25 by rosvela           #+#    #+#             */
+/*   Updated: 2026/02/18 12:14:00 by rosvela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	read_text(int fd, t_list **lst)
 {
@@ -121,27 +121,27 @@ static void	clean_lst(t_list **lst)
 
 char	*get_next_line(int fd)
 {
-	static t_list	*lst;
+	static t_list	*lst[FD_MAX];
 	char			*line;
 	size_t			len;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || fd >= FD_MAX || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free_list(lst);
-		lst = NULL;
+		free_list(lst[fd]);
+		lst[fd] = NULL;
 		return (NULL);
 	}
-	read_text(fd, &lst);
-	if (!lst)
+	read_text(fd, &lst[fd]);
+	if (!lst[fd])
 		return (NULL);
-	len = get_len_line(lst);
-	line = create_line(lst, len);
+	len = get_len_line(lst[fd]);
+	line = create_line(lst[fd], len);
 	if (!line)
 	{
-		free_list(lst);
-		lst = NULL;
+		free_list(lst[fd]);
+		lst[fd] = NULL;
 		return (NULL);
 	}
-	clean_lst(&lst);
+	clean_lst(&lst[fd]);
 	return (line);
 }
