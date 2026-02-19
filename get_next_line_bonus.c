@@ -12,7 +12,7 @@
 
 #include "get_next_line_bonus.h"
 
-static int	read_text(int fd, t_list **lst)
+static void	read_text(int fd, t_list **lst)
 {
 	int		bytes;
 	char	*text;
@@ -21,21 +21,20 @@ static int	read_text(int fd, t_list **lst)
 	{
 		text = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!text)
-			return (free_list(*lst), *lst = NULL, 0);
+			return (free_list(*lst), *lst = NULL, (void)0);
 		bytes = read(fd, text, BUFFER_SIZE);
 		if (bytes == -1)
 		{
 			free(text);
 			free_list(*lst);
 			*lst = NULL;
-			return (0);
+			return ;
 		}
 		if (bytes == 0)
-			return (free(text), 0);
+			return (free(text), (void)0);
 		text[bytes] = '\0';
 		add_list(lst, text);
 	}
-	return (1);
 }
 
 static char	*create_line(t_list *lst, size_t len)
